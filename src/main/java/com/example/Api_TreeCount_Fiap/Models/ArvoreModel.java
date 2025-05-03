@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "especie_arvore")
+@Table(name = "arvore")
 public class ArvoreModel extends ModelBase {
 
     @Column(name = "nome_popular", nullable = false, length = 100)

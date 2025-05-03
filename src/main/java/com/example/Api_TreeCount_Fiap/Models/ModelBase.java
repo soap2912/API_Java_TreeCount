@@ -16,10 +16,15 @@ public abstract class ModelBase {
     @Column(name = "data_alteracao")
     private LocalDateTime dataAlteracao;
 
+    @Column(name = "deleted_at", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    private LocalDateTime deletedAt;
+
+    // ===== [MÉTODOS DE CALLBACK] =====
     @PrePersist
     protected void onCreate() {
         this.dataCriacao = LocalDateTime.now();
         this.dataAlteracao = LocalDateTime.now();
+        this.deletedAt = null; // Garante que novos registros não sejam marcados como excluídos
     }
 
     @PreUpdate
@@ -27,7 +32,7 @@ public abstract class ModelBase {
         this.dataAlteracao = LocalDateTime.now();
     }
 
-    // Getters e Setters
+    // ===== [GETTERS] =====
     public Long getId() {
         return id;
     }
@@ -40,6 +45,11 @@ public abstract class ModelBase {
         return dataAlteracao;
     }
 
+    public LocalDateTime getDeletedAt() {
+        return deletedAt;
+    }
+
+    // ===== [SETTERS] =====
     public void setId(Long id) {
         this.id = id;
     }
@@ -50,5 +60,14 @@ public abstract class ModelBase {
 
     public void setDataAlteracao(LocalDateTime dataAlteracao) {
         this.dataAlteracao = dataAlteracao;
+    }
+
+    public void setDeletedAt(LocalDateTime deletedAt) {
+        this.deletedAt = deletedAt;
+    }
+
+    // ===== [MÉTODO AUXILIAR PARA SOFT DELETE] =====
+    public void delete() {
+        this.deletedAt = LocalDateTime.now();
     }
 }
