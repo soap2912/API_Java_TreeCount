@@ -5,7 +5,8 @@ import jakarta.persistence.Entity;
 
 public class GrupoUsuariosModel extends ModelBase{
 
+//id grupo
 
-
+    //id usuario
 
 }
