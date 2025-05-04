@@ -14,7 +14,7 @@ public class AmizadeModel extends ModelBase {
     @Column(name = "user2_id")
     private String user2_id;
 
-    @Column(name = "is_pending", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "is_pending", nullable = false)
     private boolean isPending;
 
     // Getter e Setter para 'user1_id'

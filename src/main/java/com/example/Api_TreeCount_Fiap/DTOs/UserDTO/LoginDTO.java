@@ -1,4 +1,4 @@
-package com.example.Api_TreeCount_Fiap.DTOs;
+package com.example.Api_TreeCount_Fiap.DTOs.UserDTO;
 
 public class LoginDTO {
 

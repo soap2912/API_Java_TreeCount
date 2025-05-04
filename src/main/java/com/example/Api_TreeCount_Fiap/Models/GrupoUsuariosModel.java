@@ -5,7 +5,7 @@ import jakarta.persistence.Entity;
 
 public class GrupoUsuariosModel extends ModelBase{
 
-    @Entity
+
 
 
 }

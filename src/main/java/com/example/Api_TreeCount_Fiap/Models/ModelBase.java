@@ -16,7 +16,7 @@ public abstract class ModelBase {
     @Column(name = "data_alteracao")
     private LocalDateTime dataAlteracao;
 
-    @Column(name = "deleted_at", nullable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
+    @Column(name = "deleted_at", nullable = false)
     private LocalDateTime deletedAt;
 
     // ===== [MÉTODOS DE CALLBACK] =====

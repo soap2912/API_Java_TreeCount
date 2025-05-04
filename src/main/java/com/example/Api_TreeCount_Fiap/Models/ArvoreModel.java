@@ -14,7 +14,7 @@ public class ArvoreModel extends ModelBase {
     @Column(name = "nome_cientifico", nullable = false, length = 150)
     private String nomeCientifico;
 
-    @Column(name="descricao", columnDefinition = "TEXT")
+    @Column(name="descricao", length = 255)
     private String descricao;
 
     @Column(name = "formula_carbono", length = 255)
