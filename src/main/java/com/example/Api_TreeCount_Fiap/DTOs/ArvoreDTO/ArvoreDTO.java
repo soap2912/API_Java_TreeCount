@@ -1,6 +1,8 @@
-package com.example.Api_TreeCount_Fiap.DTOs.UserDTO;
+package com.example.Api_TreeCount_Fiap.DTOs.ArvoreDTO;
 
 public class ArvoreDTO {
+
+
     private String nomePopular;
     private String nomeCientifico;
     private String descricao;

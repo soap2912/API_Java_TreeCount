@@ -16,6 +16,7 @@ public class ConnectionTester {
         try {
             // Consulta simples ao Oracle (DUAL é uma tabela virtual do Oracle)
             jdbcTemplate.queryForObject("SELECT 1 FROM DUAL", Integer.class);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package com.example.Api_TreeCount_Fiap.Services;
 
+import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserDTO;
+import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserResponseDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginResponseDTO;
 import com.example.Api_TreeCount_Fiap.Models.UserModel;
@@ -18,7 +20,6 @@ public class UserService {
 
     public LoginResponseDTO login(LoginDTO model) {
 
-        // 1. Buscar usuário por e-mail (username)
         Optional<UserModel> userOpt = userRepository.findByEmail(model.getUsername());
 
         if (userOpt.isEmpty()) {
@@ -28,16 +29,50 @@ public class UserService {
 
         UserModel user = userOpt.get();
 
-        // 2. Verificar se a senha bate com o hash
         boolean passwordOk = BCrypt.checkpw(model.getPassword(), user.getPassword());
 
         if (!passwordOk) {
             return new LoginResponseDTO(false,"Usuário ou senha inválidos", null);
         }
 
-        // 3. Gerar token JWT (caso você tenha um JwtService separado)
-        String token = new JwtService().generateToken(model.getUsername()); // você pode criar esse serviço depois
+        String token = new JwtService().generateToken(model.getUsername());
 
         return new LoginResponseDTO(true,"Login realizado com sucesso", token);
+    }
+
+    public CreateUserResponseDTO Create (CreateUserDTO model) {
+
+        var resp = new CreateUserResponseDTO();
+
+        try
+        {
+            Optional<UserModel> userOpt = userRepository.findByEmail(model.getEmail());
+
+            if(!userOpt.isEmpty()){
+
+                resp.setMessage("User j<UNK> cadastrado");
+                return resp;
+            }
+
+            UserModel user = new UserModel();
+            user.setPassword(model.getPassword());
+            user.setConfirmPassword(model.getConfirmPassword());
+            user.setEmail(model.getEmail());
+            user.setName(model.getName());
+
+            UserModel savedUser = userRepository.save(user);
+
+            resp.setSuccess(Boolean.TRUE);
+            resp.setMessage("Usuario criado com sucesso");
+            resp.setId(savedUser.getId());
+
+            return resp;
+        }
+        catch(Exception e) {
+            resp.setSuccess(Boolean.TRUE);
+            resp.setMessage("Usuario criado com sucesso");
+
+            return resp;
+        }
     }
 }

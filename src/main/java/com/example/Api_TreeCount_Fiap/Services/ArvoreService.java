@@ -1,7 +1,8 @@
 package com.example.Api_TreeCount_Fiap.Services;
 
 
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.ArvoreDTO;
+
+import com.example.Api_TreeCount_Fiap.DTOs.ArvoreDTO.ArvoreDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.ArvoreResponse;
 import com.example.Api_TreeCount_Fiap.Models.ArvoreModel;
 import com.example.Api_TreeCount_Fiap.Repository.ArvoreRepository;
