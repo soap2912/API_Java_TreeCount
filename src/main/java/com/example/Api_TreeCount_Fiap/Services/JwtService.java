@@ -2,13 +2,19 @@ package com.example.Api_TreeCount_Fiap.Services;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.util.Date;
 
 @Service
 public class JwtService {
-    private final String SECRET_KEY = "minhaChaveSecretaSuperForte";
+
+    // O valor da chave secreta não precisa vir da configuração se você gerar ela de forma segura dentro do código
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Chave gerada de forma segura
+;
 
     public String generateToken(String username) {
         return Jwts.builder()

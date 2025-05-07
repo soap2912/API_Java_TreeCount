@@ -59,9 +59,10 @@ public class AccountController {
     public ResponseEntity<Map<String, String>> create(@RequestBody CreateUserDTO model) {
         Map<String, String> response = new HashMap<>();
         CreateUserResponseDTO responseDTO = new CreateUserResponseDTO();
+        responseDTO.setSuccess(Boolean.TRUE);
 
         // Verifica se todos os campos estão preenchidos corretamente
-        if (!StringService.hasValidLength(model.getName(), 8, 256) ||
+        if (!StringService.hasValidLength(model.getName(), 2, 256) ||
                 !StringService.hasValidLength(model.getPassword(), 8, 36) ||
                 !StringService.hasValidLength(model.getEmail(), 8, 256) ||
                 !StringService.hasValidLength(model.getConfirmPassword(), 8, 36)) {
@@ -101,6 +102,17 @@ public class AccountController {
         response.put("idUser", responseDTO.getId());
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") String id) {
+
+        if ( id == null || id.isEmpty()) {
+            return ResponseEntity.badRequest().body("ID Inválido");
+        }
+        userService.deleteUser(id);
+
+        return ResponseEntity.ok("Deletado com sucesso");
     }
 
 }

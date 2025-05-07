@@ -6,8 +6,10 @@ import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginResponseDTO;
 import com.example.Api_TreeCount_Fiap.Models.UserModel;
 import com.example.Api_TreeCount_Fiap.Repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -17,6 +19,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CryptoService cryptoService;
 
     public LoginResponseDTO login(LoginDTO model) {
 
@@ -30,6 +35,9 @@ public class UserService {
         UserModel user = userOpt.get();
 
         boolean passwordOk = BCrypt.checkpw(model.getPassword(), user.getPassword());
+
+
+        //boolean passwordOk = cryptoService.verifyPassword(model.getPassword(), user.getPassword());
 
         if (!passwordOk) {
             return new LoginResponseDTO(false,"Usuário ou senha inválidos", null);
@@ -48,15 +56,14 @@ public class UserService {
         {
             Optional<UserModel> userOpt = userRepository.findByEmail(model.getEmail());
 
-            if(!userOpt.isEmpty()){
-
-                resp.setMessage("User j<UNK> cadastrado");
+            if(userOpt.isPresent()){
+                resp.setMessage("User já cadastrado");
                 return resp;
             }
 
             UserModel user = new UserModel();
-            user.setPassword(model.getPassword());
-            user.setConfirmPassword(model.getConfirmPassword());
+            user.setPassword(cryptoService.generateHashPassword(model.getPassword()));
+            user.setConfirmPassword(cryptoService.generateHashPassword(model.getConfirmPassword()));
             user.setEmail(model.getEmail());
             user.setName(model.getName());
 
@@ -70,9 +77,18 @@ public class UserService {
         }
         catch(Exception e) {
             resp.setSuccess(Boolean.TRUE);
-            resp.setMessage("Usuario criado com sucesso");
+            resp.setMessage("Erro:" + e.getMessage());
 
             return resp;
         }
     }
+
+    public void deleteUser(String id) {
+
+        var user = userRepository.getById(id);
+
+            userRepository.deleteById(id);
+    }
+
+
 }
