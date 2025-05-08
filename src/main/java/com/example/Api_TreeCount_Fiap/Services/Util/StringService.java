@@ -103,17 +103,20 @@ public class StringService {
                 campo.setAccessible(true);
                 try {
                     Object valor = campo.get(obj);
-                    resultado.put(campo.getName(), valor != null ? valor.toString() : null);
+
+                    // Só adiciona ao mapa se o valor não for nulo
+                    if (valor != null) {
+                        resultado.put(campo.getName(), valor.toString());
+                    }
                 } catch (IllegalAccessException e) {
                     // Log, se necessário
                     resultado.put(campo.getName(), "ERRO_ACESSO");
                 }
             }
 
-            clazz = clazz.getSuperclass(); // subir para a classe pai
+            clazz = clazz.getSuperclass(); // Subir para a classe pai
         }
 
         return resultado;
     }
-
 }
