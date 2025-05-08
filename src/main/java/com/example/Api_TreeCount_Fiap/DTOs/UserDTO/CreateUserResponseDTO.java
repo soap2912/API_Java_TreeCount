@@ -1,16 +1,10 @@
 package com.example.Api_TreeCount_Fiap.DTOs.UserDTO;
 
+import com.example.Api_TreeCount_Fiap.DTOs.ResponseBaseDTO;
 import lombok.Getter;
 import lombok.Setter;
 
-public class CreateUserResponseDTO {
-
-    @Getter @Setter
-    private boolean success;
-
-    @Getter @Setter
-    private String message;
-
-    @Getter @Setter
+@Getter @Setter
+public class CreateUserResponseDTO extends ResponseBaseDTO {
     private String id;
 }

@@ -1,11 +1,16 @@
 package com.example.Api_TreeCount_Fiap.Models;
 
+import com.example.Api_TreeCount_Fiap.DTOs.ArvoreDTO.CreateArvoreDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "arvore")
+@Getter
+@Setter
 public class ArvoreModel extends ModelBase {
 
     @Column(name = "nome_popular", nullable = false, length = 100)
@@ -23,45 +28,19 @@ public class ArvoreModel extends ModelBase {
     @Column(name="tipo",length = 50)
     private String tipo;
 
-    // Getters e Setters
-
-    public String getNomePopular() {
-        return nomePopular;
+    // ✅ Construtor que aceita um CreateArvoreDTO
+    public ArvoreModel(CreateArvoreDTO dto) {
+        this.nomePopular = dto.getNomePopular();
+        this.nomeCientifico = dto.getNomeCientifico();
+        this.descricao = dto.getDescricao();
+        this.formulaCarbono = dto.getFormulaCarbono();
+        this.tipo = dto.getTipo();
     }
 
-    public void setNomePopular(String nomePopular) {
-        this.nomePopular = nomePopular;
+    // Construtor padrão obrigatório para JPA
+    public ArvoreModel() {
     }
 
-    public String getNomeCientifico() {
-        return nomeCientifico;
-    }
 
-    public void setNomeCientifico(String nomeCientifico) {
-        this.nomeCientifico = nomeCientifico;
-    }
 
-    public String getDescricao() {
-        return descricao;
-    }
-
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getFormulaCarbono() {
-        return formulaCarbono;
-    }
-
-    public void setFormulaCarbono(String formulaCarbono) {
-        this.formulaCarbono = formulaCarbono;
-    }
 }

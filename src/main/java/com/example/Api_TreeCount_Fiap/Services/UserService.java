@@ -1,5 +1,6 @@
 package com.example.Api_TreeCount_Fiap.Services;
 
+import com.example.Api_TreeCount_Fiap.DTOs.ResponseBaseDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserResponseDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
@@ -83,12 +84,31 @@ public class UserService {
         }
     }
 
-    public void deleteUser(String id) {
+    public ResponseBaseDTO deleteUser(String id) {
+        ResponseBaseDTO responseDTO = new ResponseBaseDTO();
 
-        var user = userRepository.getById(id);
+        try {
+            Optional<UserModel> userOpt = userRepository.findById(id);
 
-            userRepository.deleteById(id);
+            if (userOpt.isEmpty()) {
+                responseDTO.setSuccess(false);
+                responseDTO.setMessage("Usuário não encontrado para exclusão");
+                return responseDTO;
+            }
+
+            UserModel user = userOpt.get();
+            user.delete(); // soft delete (ajusta deletedAt e email)
+            userRepository.save(user); // salva com email modificado e deletedAt preenchido
+
+            responseDTO.setSuccess(true);
+            responseDTO.setMessage("Usuário deletado com sucesso");
+
+        } catch (Exception e) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("Erro ao tentar excluir o usuário: " + e.getMessage());
+        }
+
+        return responseDTO;
     }
-
 
 }

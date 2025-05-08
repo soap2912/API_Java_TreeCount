@@ -1,5 +1,10 @@
 package com.example.Api_TreeCount_Fiap.DTOs.UserDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class LoginResponseDTO {
 
     private String token;
@@ -10,29 +15,5 @@ public class LoginResponseDTO {
         this.success = success;
         this.token = token;
         this.message = message;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.Api_TreeCount_Fiap.Controllers;
 
+import com.example.Api_TreeCount_Fiap.DTOs.ResponseBaseDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserResponseDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
@@ -7,6 +8,7 @@ import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginResponseDTO;
 import com.example.Api_TreeCount_Fiap.Services.UserService;
 import com.example.Api_TreeCount_Fiap.Services.Util.StringService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,14 +107,32 @@ public class AccountController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id") String id) {
+    public ResponseEntity<ResponseBaseDTO> delete(@PathVariable("id") String id) {
+        ResponseBaseDTO responseDTO = new ResponseBaseDTO();
 
-        if ( id == null || id.isEmpty()) {
-            return ResponseEntity.badRequest().body("ID Inválido");
+        try {
+            if (id == null || id.isBlank()) {
+                responseDTO.setSuccess(false);
+                responseDTO.setMessage("Informe um ID válido");
+                return ResponseEntity.badRequest().body(responseDTO);
+            }
+
+            // Chama o serviço que já retorna um ResponseBaseDTO
+            responseDTO = userService.deleteUser(id);
+
+            if (!responseDTO.isSuccess()) {
+                // Se o usuário não foi encontrado ou houve falha no processo
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseDTO);
+            }
+
+            // Sucesso na exclusão
+            return ResponseEntity.noContent().build(); // HTTP 204
+
+        } catch (Exception e) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("Erro ao excluir usuário: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDTO);
         }
-        userService.deleteUser(id);
-
-        return ResponseEntity.ok("Deletado com sucesso");
     }
 
 }

@@ -1,7 +1,13 @@
 package com.example.Api_TreeCount_Fiap.Services.Util;
 
+import org.springframework.stereotype.Service;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+@Service
 public class StringService {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
@@ -46,6 +52,68 @@ public class StringService {
             return false;
         }
         return str1.equals(str2);
+    }
+
+    public static boolean hasEmptyStringFields(Object objeto) {
+        if (objeto == null) return false;
+
+        Class<?> clazz = objeto.getClass();
+        Field[] campos = clazz.getDeclaredFields();
+
+        try {
+            for (Field campo : campos) {
+                if (campo.getType().equals(String.class)) {
+                    campo.setAccessible(true);
+                    String valor = (String) campo.get(objeto);
+                    if (valor == null || valor.trim().isEmpty()) {
+                        return true;  // Retorna true se encontrar um campo vazio
+                    }
+                }
+            }
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return false;  // Retorna false se não encontrar nenhum campo vazio
+    }
+
+
+    public static boolean isNullOrWhiteSpace(String str) {
+        if (str == null) {
+            return true; // Considera null como "vazio"
+        }
+        return str.trim().isEmpty(); // Remove espaços em branco no início e no final e verifica se a string resultante é vazia
+    }
+
+    public static Map<String, String> toMapStringString(Object obj) {
+        Map<String, String> resultado = new HashMap<>();
+
+        if (obj == null) {
+            return resultado;
+        }
+
+        Class<?> clazz = obj.getClass();
+
+        // Iterar pela hierarquia de classes
+        while (clazz != null && clazz != Object.class) {
+            Field[] campos = clazz.getDeclaredFields();
+
+            for (Field campo : campos) {
+                campo.setAccessible(true);
+                try {
+                    Object valor = campo.get(obj);
+                    resultado.put(campo.getName(), valor != null ? valor.toString() : null);
+                } catch (IllegalAccessException e) {
+                    // Log, se necessário
+                    resultado.put(campo.getName(), "ERRO_ACESSO");
+                }
+            }
+
+            clazz = clazz.getSuperclass(); // subir para a classe pai
+        }
+
+        return resultado;
     }
 
 }
