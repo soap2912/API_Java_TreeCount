@@ -10,16 +10,20 @@ import com.example.Api_TreeCount_Fiap.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtService jwtService;
 
     @Autowired
     private CryptoService cryptoService;
@@ -109,6 +113,59 @@ public class UserService {
         }
 
         return responseDTO;
+    }
+
+    public UserModel getUserById(String id) {
+
+        try{
+            Optional<UserModel> userOpt = userRepository.findById(id);
+
+            return userOpt.get();
+        }catch (EntityNotFoundException e) {
+            return null;
+        }
+    }
+
+    public UserModel getUserByEmail(String email) {
+
+        try{
+            Optional<UserModel> userOpt = userRepository.findByEmail(email);
+
+            return userOpt.get();
+        }catch (EntityNotFoundException e) {
+            return null;
+        }
+    }
+
+    public boolean isAuthenticatedUser(String token, String idUser2) {
+
+        Optional<UserModel> userOpt = getUserByJwtToken(token);
+
+        if (!userOpt.isPresent()) return false;
+
+        // ✅ Verifica se idUser2 é um UUID válido
+        try {
+            UUID.fromString(idUser2);
+        } catch (IllegalArgumentException e) {
+            return false; // id inválido
+        }
+
+        return userOpt.get().getId().equals(idUser2);
+    }
+
+    public  Optional<UserModel> getUserByJwtToken(String token) {
+
+        String email = jwtService.extractUsername(token);
+
+        Optional<UserModel> userOpt = userRepository.findByEmail(email);
+
+        if (!userOpt.isPresent()) return null;
+
+        return userOpt;
+
+    }
+    public List<UserModel> getUsersByIds(List<String> ids) {
+        return userRepository.findAllById(ids);
     }
 
 }

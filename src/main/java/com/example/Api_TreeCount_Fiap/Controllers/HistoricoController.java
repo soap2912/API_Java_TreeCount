@@ -2,7 +2,6 @@ package com.example.Api_TreeCount_Fiap.Controllers;
 
 import com.example.Api_TreeCount_Fiap.DTOs.HistoricoDTO.CreateHistoricoDTO;
 import com.example.Api_TreeCount_Fiap.DTOs.HistoricoDTO.CreateHistoricoResponseDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.HistoricoDTO.ListHistoricoByIdResponse;
 import com.example.Api_TreeCount_Fiap.Services.HistoricoService;
 import com.example.Api_TreeCount_Fiap.Services.Util.StringService;
 import org.springframework.beans.factory.annotation.Autowired;
