@@ -99,6 +99,40 @@ public class ArvoreService {
         return response;
     }
 
+    //Metodo update da arvore
+    public ResponseBaseDTO update(Long id, CreateArvoreDTO dto) {
+        var response = new ResponseBaseDTO();
+
+        try {
+            Optional<ArvoreModel> arvoreOpt = arvoreRepository.findById(id);
+
+            if (arvoreOpt.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Árvore não encontrada");
+                return response;
+            }
+
+            ArvoreModel arvore = arvoreOpt.get();
+            arvore.setNomePopular(dto.getNomePopular());
+            arvore.setNomeCientifico(dto.getNomeCientifico());
+            arvore.setDescricao(dto.getDescricao());
+            arvore.setFormulaCarbono(dto.getFormulaCarbono());
+            arvore.setTipo(dto.getTipo());
+
+            arvoreRepository.save(arvore);
+
+            response.setSuccess(true);
+            response.setMessage("Árvore atualizada com sucesso");
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Erro ao atualizar árvore: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+
     public ResponseBaseDTO deletar(Long id) {
         ResponseBaseDTO responseDTO = new ResponseBaseDTO();
 

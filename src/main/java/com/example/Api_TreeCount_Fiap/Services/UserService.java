@@ -1,10 +1,7 @@
 package com.example.Api_TreeCount_Fiap.Services;
 
 import com.example.Api_TreeCount_Fiap.DTOs.ResponseBaseDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserResponseDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginResponseDTO;
+import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.*;
 import com.example.Api_TreeCount_Fiap.Models.UserModel;
 import com.example.Api_TreeCount_Fiap.Repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -166,6 +163,38 @@ public class UserService {
     }
     public List<UserModel> getUsersByIds(List<String> ids) {
         return userRepository.findAllById(ids);
+    }
+
+    //metodo para update buscando pelo e-mail, pois no DTO não tem id.
+    public ResponseBaseDTO updateUserById(EditUserDTO dto) {
+        ResponseBaseDTO response = new ResponseBaseDTO();
+
+        try {
+            Optional<UserModel> userOpt = userRepository.findById(dto.getId());
+
+            if (userOpt.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("Usuário não encontrado");
+                return response;
+            }
+
+            UserModel user = userOpt.get();
+
+            user.setName(dto.getName());
+            user.setEmail(dto.getEmail());
+            user.setPassword(dto.getPassword()); // Idealmente, criptografada
+
+            userRepository.save(user);
+
+            response.setSuccess(true);
+            response.setMessage("Usuário atualizado com sucesso");
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Erro ao atualizar usuário: " + e.getMessage());
+        }
+
+        return response;
     }
 
 }

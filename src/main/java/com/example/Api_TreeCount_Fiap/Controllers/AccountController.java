@@ -1,10 +1,7 @@
 package com.example.Api_TreeCount_Fiap.Controllers;
 
 import com.example.Api_TreeCount_Fiap.DTOs.ResponseBaseDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.CreateUserResponseDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginDTO;
-import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.LoginResponseDTO;
+import com.example.Api_TreeCount_Fiap.DTOs.UserDTO.*;
 import com.example.Api_TreeCount_Fiap.Services.UserService;
 import com.example.Api_TreeCount_Fiap.Services.Util.StringService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,5 +131,60 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseDTO);
         }
     }
+
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<EditUserResponseDTO> edit(@PathVariable Long id, @RequestBody EditUserDTO model) {
+        EditUserResponseDTO response = new EditUserResponseDTO();
+
+        try {
+            // Verificação se o ID foi enviado
+            if (id == null) {
+                response.setSuccess(false);
+                response.setMessage("ID do usuário é obrigatório");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Validação dos campos do DTO
+            if (!StringService.hasValidLength(model.getName(), 2, 256) ||
+                    !StringService.hasValidLength(model.getPassword(), 8, 36) ||
+                    !StringService.hasValidLength(model.getEmail(), 8, 256)) {
+
+                response.setSuccess(false);
+                response.setMessage("Preencha todos os campos corretamente");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (!StringService.isEmail(model.getEmail())) {
+                response.setSuccess(false);
+                response.setMessage("Email inválido");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            if (!StringService.isStrongPassword(model.getPassword())) {
+                response.setSuccess(false);
+                response.setMessage("A senha deve conter letra maiúscula, minúscula, número e caractere especial");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // Chama o serviço para atualizar o usuário por ID
+            ResponseBaseDTO updateResponse = userService.updateUserById(model); // - metodo por ID
+
+            if (!updateResponse.isSuccess()) {
+                response.setSuccess(false);
+                response.setMessage(updateResponse.getMessage());
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+            }
+
+            response.setSuccess(true);
+            response.setMessage("Usuário atualizado com sucesso");
+            return ResponseEntity.ok(response);
+
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("Erro ao editar usuário: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
 
 }

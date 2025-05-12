@@ -126,4 +126,15 @@ public class ArvoreController {
         }
     }
 
+    @PostMapping("/edit/{id}")
+    public ResponseEntity<ResponseBaseDTO> edit(@PathVariable Long id, @RequestBody CreateArvoreDTO dto) {
+        ResponseBaseDTO response = arvoreService.update(id, dto);
+
+        if (!response.isSuccess()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+
+        return ResponseEntity.ok(response);
+    }
+
 }
