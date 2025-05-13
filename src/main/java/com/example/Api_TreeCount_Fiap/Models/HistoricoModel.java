@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class HistoricoModel extends ModelBase {
+public class HistoricoModel extends ModelBase<Long> {
 
     @Column(name = "latitude", nullable = false)
     private Double latitude;

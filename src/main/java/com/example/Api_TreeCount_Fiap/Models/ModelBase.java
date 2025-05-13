@@ -9,11 +9,11 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 @Getter
 @Setter
-public abstract class ModelBase {
+public abstract class ModelBase<T>  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private T id;
 
     @Column(name = "data_criacao", updatable = false)
     private LocalDateTime dataCriacao;

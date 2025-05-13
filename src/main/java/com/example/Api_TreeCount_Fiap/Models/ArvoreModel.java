@@ -11,7 +11,7 @@ import lombok.Setter;
 @Table(name = "arvore")
 @Getter
 @Setter
-public class ArvoreModel extends ModelBase {
+public class ArvoreModel extends ModelBase<Long> {
 
     @Column(name = "nome_popular", nullable = false, length = 100)
     private String nomePopular;

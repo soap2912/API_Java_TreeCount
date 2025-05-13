@@ -6,7 +6,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Grupo")
-public class GrupoModel extends ModelBase {
+public class GrupoModel extends ModelBase<Long> {
 
     @Column(name = "nome")
     private String nome;

@@ -9,7 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "users")
 @Getter @Setter
 @AttributeOverride(name = "id", column = @Column(name = "id", columnDefinition = "VARCHAR(36)", updatable = false, nullable = false))
-public class UserModel extends ModelBase {
+public class UserModel extends ModelBase<String> {
 
     @Id
     @GeneratedValue(generator = "uuid2")
