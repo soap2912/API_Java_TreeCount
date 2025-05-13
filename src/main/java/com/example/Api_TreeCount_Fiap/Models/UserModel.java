@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Getter @Setter
 @AttributeOverride(name = "id", column = @Column(name = "id", columnDefinition = "VARCHAR(36)", updatable = false, nullable = false))
-public class UserModel extends ModelBase<String> {
+public class UserModel {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -29,10 +31,32 @@ public class UserModel extends ModelBase<String> {
     @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Override
+    @Column(name = "data_criacao", updatable = false)
+    private LocalDateTime dataCriacao;
+
+    @Column(name = "data_alteracao")
+    private LocalDateTime dataAlteracao;
+
+    @Column(name = "deleted_at", nullable = true)
+    private LocalDateTime deletedAt;
+
+    // ===== [MÉTODOS DE CALLBACK] =====
+    @PrePersist
+    protected void onCreate() {
+        this.dataCriacao = LocalDateTime.now();
+        this.dataAlteracao = LocalDateTime.now();
+        this.deletedAt = null; // Garante que novos registros não sejam marcados como excluídos
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        this.dataAlteracao = LocalDateTime.now();
+    }
+
+
+    // ===== [MÉTODO AUXILIAR PARA SOFT DELETE] =====
     public void delete() {
-        // Garante o soft delete padrão
-        super.delete();
+        this.deletedAt = LocalDateTime.now();
 
         // Evita conflito de email único ao reutilizar o mesmo email no futuro
         if (this.email != null && this.id != null) {

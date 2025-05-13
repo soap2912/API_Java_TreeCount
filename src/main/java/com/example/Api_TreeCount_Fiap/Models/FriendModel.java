@@ -9,7 +9,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "amizade")
 @Getter @Setter
-public class FriendModel extends ModelBase<Long> {
+public class FriendModel extends ModelBase {
 
     @Column(name = "user1_id")
     private String user1_id;

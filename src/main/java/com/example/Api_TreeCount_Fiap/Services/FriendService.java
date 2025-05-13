@@ -76,7 +76,7 @@ public class FriendService {
 
         // Busca amizade pendente onde o solicitante é o remetente e o destinatário é o usuário atual
         Optional<FriendModel> amizade = friendRepository
-                .findByUser1IdAndUser2IdAndIsPendingTrue(remetenteId, userAtualId);
+                .findPendingFriendship(userAtualId, remetenteId);
 
         if (!amizade.isPresent()) {
             response.setSuccess(Boolean.FALSE);
@@ -104,7 +104,7 @@ public class FriendService {
 
         String userId = userOpt.get().getId();
 
-        List<FriendModel> amizades = friendRepository.findByUser1IdOrUser2IdAndIsPendingFalse(userId, userId);
+        List<FriendModel> amizades = friendRepository.findAllFriendsByUserId(userId);
 
         List<String> idsAmigos = amizades.stream()
                 .map(amizade -> amizade.getUser1_id().equals(userId) ? amizade.getUser2_id() : amizade.getUser1_id())
